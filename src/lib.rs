@@ -11,6 +11,7 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> worker::Result<Respo
     let router = Router::new();
 
     router
+        .get("/", |_, _| Response::ok("Hey! Here is how to use it https://github.com/VictorBulba/test-grafbase/blob/master/README.md"))
         .get_async("/get_user_bio", get_user_bio)
         .post_async("/create_user", create_user)
         .post_async("/update_user_bio", update_user_bio)
