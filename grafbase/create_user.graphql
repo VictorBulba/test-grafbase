@@ -3,6 +3,7 @@ mutation UserCreate($input: User!) {
     user {
       username
       password
+      description
       updatedAt
       createdAt
     }
