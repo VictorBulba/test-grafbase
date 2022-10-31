@@ -1,0 +1,6 @@
+query($by: UserByInput!) {
+    user(by: $by) {
+        username
+        password
+    }
+}
