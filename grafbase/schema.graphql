@@ -1,0 +1,11 @@
+type User @model {
+  id: ID!
+  username: String!
+  credentials: Credentials!
+}
+
+type Credentials @model {
+  email: String!
+  password: String!
+}
+
