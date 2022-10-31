@@ -1,11 +1,10 @@
 mutation ($input: UserCreateInput!) {
 	userCreate(input: $input) {
-		user {
-			username
-			password
-			bio
-			updatedAt
-			createdAt
-		}
-	}
+        user {
+            id
+            username
+            password
+            bio
+        }
+  }
 }

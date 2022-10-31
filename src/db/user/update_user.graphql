@@ -1,0 +1,10 @@
+mutation ($id: ID!, $input: UserUpdateInput!) {
+	userUpdate(id: $id, input: $input) {
+		user {
+			id
+			username
+			password
+			bio
+		}
+	}
+}
