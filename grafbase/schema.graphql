@@ -1,11 +1,6 @@
 type User @model {
   id: ID!
-  username: String!
-  credentials: Credentials!
-}
-
-type Credentials {
-  email: String!
+  email: String! @unique
   password: String!
+  username: String!
 }
-
