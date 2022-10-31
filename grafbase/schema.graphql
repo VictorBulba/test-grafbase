@@ -2,6 +2,6 @@ type User @model {
   id: ID!
   username: String! @unique
   password: String!
-  description: String! @default(value: "")
+  bio: String! @default(value: "")
 }
 

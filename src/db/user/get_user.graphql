@@ -1,7 +1,7 @@
-query($by: UserByInput!) {
+query ($by: UserByInput!) {
     user(by: $by) {
         username
         password
-        description
+        bio
     }
 }
