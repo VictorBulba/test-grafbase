@@ -4,7 +4,7 @@ type User @model {
   credentials: Credentials!
 }
 
-type Credentials @model {
+type Credentials {
   email: String!
   password: String!
 }
