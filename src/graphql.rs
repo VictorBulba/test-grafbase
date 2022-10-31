@@ -3,7 +3,7 @@ use worker::RouteContext;
 #[derive(serde::Serialize)]
 pub(crate) struct QueryRequest<T> {
     pub(crate) query: &'static str,
-    pub(crate) variables: T
+    pub(crate) variables: T,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -30,10 +30,16 @@ impl<T> Into<Result<T, String>> for GraphQLResponse<T> {
 }
 
 impl<T: serde::Serialize> QueryRequest<T> {
-    pub(crate) async fn send<R: serde::de::DeserializeOwned>(&self, ctx: &RouteContext<()>) -> Result<R, String> {
+    pub(crate) async fn send<R: serde::de::DeserializeOwned>(
+        &self,
+        ctx: &RouteContext<()>,
+    ) -> Result<R, String> {
         reqwest::Client::new()
             .post("https://test-grafbase-victorbulba.grafbase.app/graphql")
-            .header("x-api-key", &ctx.env.var("GRAFBASE_API_KEY").unwrap().to_string())
+            .header(
+                "x-api-key",
+                &ctx.env.var("GRAFBASE_API_KEY").unwrap().to_string(),
+            )
             .json(&self)
             .send()
             .await

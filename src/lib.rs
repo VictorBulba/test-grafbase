@@ -1,8 +1,8 @@
-mod utils;
-mod graphql;
 mod db;
+mod graphql;
+mod utils;
 
-use worker::{Request, Env, Context, Response, Router, RouteContext};
+use worker::{Context, Env, Request, Response, RouteContext, Router};
 
 #[worker::event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: Context) -> worker::Result<Response> {
@@ -57,7 +57,13 @@ async fn create_user(mut req: Request, ctx: RouteContext<()>) -> worker::Result<
     let user = db::user::get_user(&req_params.username, &ctx).await;
 
     if user.is_some() {
-        return Response::error(format!("User with username `{}` already exists", req_params.username), 400);
+        return Response::error(
+            format!(
+                "User with username `{}` already exists",
+                req_params.username
+            ),
+            400,
+        );
     }
 
     let bio = req.text().await?;
@@ -79,7 +85,12 @@ async fn update_user_bio(mut req: Request, ctx: RouteContext<()>) -> worker::Res
 
     let user = match user {
         Some(user) => user,
-        None => return Response::error(format!("User `{}` does not exist", req_params.username), 400),
+        None => {
+            return Response::error(
+                format!("User `{}` does not exist", req_params.username),
+                400,
+            )
+        }
     };
 
     if user.password != req_params.password {

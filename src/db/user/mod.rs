@@ -19,8 +19,7 @@ pub(crate) async fn get_user(username: &str, ctx: &RouteContext<()>) -> Option<U
         variables: serde_json::json!({ "by": { "username": username } }),
     };
 
-    req
-        .send::<UserResponse>(ctx)
+    req.send::<UserResponse>(ctx)
         .await
         .expect("GraphQL error")
         .user
@@ -40,10 +39,7 @@ pub(crate) async fn create_user(username: &str, password: &str, bio: &str, ctx: 
         ),
     };
 
-    req
-        .send::<UserResponse>(ctx)
-        .await
-        .expect("GraphQL error");
+    req.send::<UserResponse>(ctx).await.expect("GraphQL error");
 }
 
 pub(crate) async fn update_bio(id: &str, new_bio: &str, ctx: &RouteContext<()>) {
@@ -59,8 +55,5 @@ pub(crate) async fn update_bio(id: &str, new_bio: &str, ctx: &RouteContext<()>) 
         ),
     };
 
-    req
-        .send::<UserResponse>(ctx)
-        .await
-        .expect("GraphQL error");
+    req.send::<UserResponse>(ctx).await.expect("GraphQL error");
 }
