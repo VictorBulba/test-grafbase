@@ -21,6 +21,11 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> worker::Result<Respo
 #[derive(serde::Deserialize)]
 struct UserReq<'a> {
     username: &'a str,
+}
+
+#[derive(serde::Deserialize)]
+struct UserReqWithPassword<'a> {
+    username: &'a str,
     password: &'a str,
 }
 
@@ -39,17 +44,13 @@ async fn get_user_bio(req: Request, ctx: RouteContext<()>) -> worker::Result<Res
         None => return Response::error(format!("User `{}` does not exist", req.username), 400),
     };
 
-    if user.password == req.password {
-        Response::ok(user.bio)
-    } else {
-        Response::error("Used not authorized", 401)
-    }
+    Response::ok(user.bio)
 }
 
 async fn create_user(mut req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let url = req.url()?;
 
-    let req_params: UserReq = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
+    let req_params: UserReqWithPassword = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
         Ok(r) => r,
         Err(_) => return Response::error("Bad request", 400),
     };
@@ -76,7 +77,7 @@ async fn create_user(mut req: Request, ctx: RouteContext<()>) -> worker::Result<
 async fn update_user_bio(mut req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let url = req.url()?;
 
-    let req_params: UserReq = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
+    let req_params: UserReqWithPassword = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
         Ok(r) => r,
         Err(_) => return Response::error("Bad request", 400),
     };
