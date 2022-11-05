@@ -33,16 +33,12 @@ struct UserReqWithPassword<'a> {
 async fn get_user_bio(req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let url = req.url()?;
 
-    let req: UserReq = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
-        Ok(r) => r,
-        Err(_) => return Response::error("Bad request", 400),
+    let Ok(req_params) = serde_urlencoded::from_str::<UserReq>(url.query().unwrap_or("")) else {
+        return Response::error("Bad request", 400)
     };
 
-    let user = db::user::get_user(&req.username, &ctx).await;
-
-    let user = match user {
-        Some(user) => user,
-        None => return Response::error(format!("User `{}` does not exist", req.username), 400),
+    let Some(user) = db::user::get_user(&req_params.username, &ctx).await else {
+        return Response::error(format!("User `{}` does not exist", req_params.username), 400)
     };
 
     Response::ok(user.bio)
@@ -51,9 +47,8 @@ async fn get_user_bio(req: Request, ctx: RouteContext<()>) -> worker::Result<Res
 async fn create_user(mut req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let url = req.url()?;
 
-    let req_params: UserReqWithPassword = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
-        Ok(r) => r,
-        Err(_) => return Response::error("Bad request", 400),
+    let Ok(req_params) = serde_urlencoded::from_str::<UserReqWithPassword>(url.query().unwrap_or("")) else {
+        return Response::error("Bad request", 400)
     };
 
     let user = db::user::get_user(&req_params.username, &ctx).await;
@@ -78,21 +73,15 @@ async fn create_user(mut req: Request, ctx: RouteContext<()>) -> worker::Result<
 async fn update_user_bio(mut req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let url = req.url()?;
 
-    let req_params: UserReqWithPassword = match serde_urlencoded::from_str(url.query().unwrap_or("")) {
-        Ok(r) => r,
-        Err(_) => return Response::error("Bad request", 400),
+    let Ok(req_params) = serde_urlencoded::from_str::<UserReqWithPassword>(url.query().unwrap_or("")) else {
+        return Response::error("Bad request", 400)
     };
 
-    let user = db::user::get_user(&req_params.username, &ctx).await;
-
-    let user = match user {
-        Some(user) => user,
-        None => {
-            return Response::error(
-                format!("User `{}` does not exist", req_params.username),
-                400,
-            )
-        }
+    let Some(user) = db::user::get_user(&req_params.username, &ctx).await else {
+        return Response::error(
+            format!("User `{}` does not exist", req_params.username),
+            400,
+        )
     };
 
     if user.password != req_params.password {
